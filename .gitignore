@@ -1,0 +1,23 @@
+# vs code and vim
+*.swp
+.vscode/
+
+
+bin/
+bin-int/
+build/
+
+# personal project management
+TODO.md
+docs/
+
+# compiler & os junk (highly recommended for c++)
+*.o
+*.obj
+*.out
+.DS_Store
+Thumbs.db
+
+# to make sure global git configurations arent removes
+!.gitattributes
+!.gitignore
