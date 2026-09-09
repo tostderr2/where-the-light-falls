@@ -2,6 +2,42 @@
 
 #include <spdlog/spdlog.h>
 
+#include "common.h"
+
+namespace core {
+
+CORE_API class Log {
+  public:
+    static void Init();
+
+    inline static std::shared_ptr<spdlog::logger> &GetCoreLogger() {
+        return s_coreLogger;
+    }
+    inline static std::shared_ptr<spdlog::logger> &GetGameLogger() {
+        return s_gameLogger;
+    }
+
+  private:
+    static std::shared_ptr<spdlog::logger> s_coreLogger;
+    static std::shared_ptr<spdlog::logger> s_gameLogger;
+};
+
+} // namespace core
+
+// macros for logs
+#define LOG_CORE_TRACE(...) ::core::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define LOG_CORE_DEBUG(...) ::core::Log::GetCoreLogger()->debug(__VA_ARGS__)
+#define LOG_CORE_INFO(...) ::core::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define LOG_CORE_WARN(...) ::core::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define LOG_CORE_ERR(...) ::core::Log::GetCoreLogger()->error(__VA_ARGS__)
+#define LOG_CORE_CRITICAL(...) ::core::Log::GetCoreLogger()->critical(__VA_ARGS__)
+
+#define LOG_GAME_TRACE(...) ::core::Log::GetGameLogger()->trace(__VA_ARGS__)
+#define LOG_GAME_DEBUG(...) ::core::Log::GetGameLogger()->debug(__VA_ARGS__)
+#define LOG_GAME_INFO(...) ::core::Log::GetGameLogger()->info(__VA_ARGS__)
+#define LOG_GAME_WARN(...) ::core::Log::GetGameLogger()->warn(__VA_ARGS__)
+#define LOG_GAME_ERR(...) ::core::Log::GetGameLogger()->error(__VA_ARGS__)
+#define LOG_GAME_CRITICAL(...) ::core::Log::GetGameLogger()->critical(__VA_ARGS__)
 
 /* INFO: examples from spdlog/examples.cpp
 
@@ -35,6 +71,4 @@
         }
         // e.g. if some error happened:
         spdlog::dump_backtrace();  // log them now!
-
-
 */
