@@ -1,0 +1,12 @@
+[2026-09-10 14:54:42.263] [T:93801] [GAME] [critical] [main.cpp:11]: game crit!!
+[2026-09-10 14:54:42.263] [T:93801] [GAME] [error] [main.cpp:12]: game err!!
+[2026-09-10 14:54:42.263] [T:93801] [GAME] [warning] [main.cpp:13]: game warn!!
+[2026-09-10 14:54:42.263] [T:93801] [GAME] [info] [main.cpp:14]: game info!!
+[2026-09-10 14:54:42.263] [T:93801] [GAME] [debug] [main.cpp:15]: game debug!!
+[2026-09-10 14:54:42.263] [T:93801] [GAME] [trace] [main.cpp:16]: game trace!!
+[2026-09-10 14:54:42.263] [T:93801] [CORE] [critical] [main.cpp:19]: core crit!!
+[2026-09-10 14:54:42.263] [T:93801] [CORE] [error] [main.cpp:20]: core err!!
+[2026-09-10 14:54:42.263] [T:93801] [CORE] [warning] [main.cpp:21]: core warn!!
+[2026-09-10 14:54:42.263] [T:93801] [CORE] [info] [main.cpp:22]: core info!!
+[2026-09-10 14:54:42.263] [T:93801] [CORE] [debug] [main.cpp:23]: core debug!!
+[2026-09-10 14:54:42.263] [T:93801] [CORE] [trace] [main.cpp:24]: core trace!!

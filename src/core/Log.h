@@ -1,19 +1,22 @@
 #pragma once
 
+#include <memory>
+
 #include <spdlog/spdlog.h>
 
-#include "common.h"
+#include "Core.h"
 
 namespace core {
 
-CORE_API class Log {
+class Log {
   public:
     static void Init();
+    static void Shutdown();
 
-    inline static std::shared_ptr<spdlog::logger> &GetCoreLogger() {
+    static std::shared_ptr<spdlog::logger> &GetCoreLogger() {
         return s_coreLogger;
     }
-    inline static std::shared_ptr<spdlog::logger> &GetGameLogger() {
+    static std::shared_ptr<spdlog::logger> &GetGameLogger() {
         return s_gameLogger;
     }
 
@@ -24,51 +27,96 @@ CORE_API class Log {
 
 } // namespace core
 
-// macros for logs
-#define LOG_CORE_TRACE(...) ::core::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define LOG_CORE_DEBUG(...) ::core::Log::GetCoreLogger()->debug(__VA_ARGS__)
-#define LOG_CORE_INFO(...) ::core::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define LOG_CORE_WARN(...) ::core::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define LOG_CORE_ERR(...) ::core::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define LOG_CORE_CRITICAL(...) ::core::Log::GetCoreLogger()->critical(__VA_ARGS__)
+// Helper macro for source location
+#define CORE_LOG_CALL(logger, level, ...) \
+    logger->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, level, __VA_ARGS__)
 
-#define LOG_GAME_TRACE(...) ::core::Log::GetGameLogger()->trace(__VA_ARGS__)
-#define LOG_GAME_DEBUG(...) ::core::Log::GetGameLogger()->debug(__VA_ARGS__)
-#define LOG_GAME_INFO(...) ::core::Log::GetGameLogger()->info(__VA_ARGS__)
-#define LOG_GAME_WARN(...) ::core::Log::GetGameLogger()->warn(__VA_ARGS__)
-#define LOG_GAME_ERR(...) ::core::Log::GetGameLogger()->error(__VA_ARGS__)
-#define LOG_GAME_CRITICAL(...) ::core::Log::GetGameLogger()->critical(__VA_ARGS__)
+// -------------------------------
+// Core Logger Macros
+// -------------------------------
+#if (CORE_LOG_LEVEL <= 0)
+#    define LOG_CORE_TRACE(...) \
+        CORE_LOG_CALL(::core::Log::GetCoreLogger(), spdlog::level::trace, __VA_ARGS__)
+#else
+#    define LOG_CORE_TRACE(...) ((void)0)
+#endif
 
-/* INFO: examples from spdlog/examples.cpp
+#if (CORE_LOG_LEVEL <= 1)
+#    define LOG_CORE_DEBUG(...) \
+        CORE_LOG_CALL(::core::Log::GetCoreLogger(), spdlog::level::debug, __VA_ARGS__)
+#else
+#    define LOG_CORE_DEBUG(...) ((void)0)
+#endif
 
-        spdlog::info("Welcome to spdlog version {}.{}.{}  !", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR,
-                     SPDLOG_VER_PATCH);
+#if (CORE_LOG_LEVEL <= 2)
+#    define LOG_CORE_INFO(...) \
+        CORE_LOG_CALL(::core::Log::GetCoreLogger(), spdlog::level::info, __VA_ARGS__)
+#else
+#    define LOG_CORE_INFO(...) ((void)0)
+#endif
 
-        spdlog::warn("Easy padding in numbers like {:08d}", 12);
-        spdlog::critical("Support for int: {0:d};  hex: {0:x};  oct: {0:o}; bin: {0:b}", 42);
-        spdlog::info("Support for floats {:03.2f}", 1.23456);
-        spdlog::info("Positional args are {1} {0}..", "too", "supported");
-        spdlog::info("{:>8} aligned, {:<8} aligned", "right", "left");
+#if (CORE_LOG_LEVEL <= 3)
+#    define LOG_CORE_WARN(...) \
+        CORE_LOG_CALL(::core::Log::GetCoreLogger(), spdlog::level::warn, __VA_ARGS__)
+#else
+#    define LOG_CORE_WARN(...) ((void)0)
+#endif
 
-        // Runtime log levels
-        spdlog::set_level(spdlog::level::info);  // Set global log level to info
-        spdlog::debug("This message should not be displayed!");
-        spdlog::set_level(spdlog::level::trace);  // Set specific logger's log level
-        spdlog::debug("This message should be displayed..");
+#if (CORE_LOG_LEVEL <= 4)
+#    define LOG_CORE_ERR(...) \
+        CORE_LOG_CALL(::core::Log::GetCoreLogger(), spdlog::level::err, __VA_ARGS__)
+#else
+#    define LOG_CORE_ERR(...) ((void)0)
+#endif
 
-        // Customize msg format for all loggers
-        spdlog::set_pattern("[%H:%M:%S %z] [%^%L%$] [thread %t] %v");
-        spdlog::info("This an info message with custom format");
-        spdlog::set_pattern("%+");  // back to default format
-        spdlog::set_level(spdlog::level::info);
+// #if (CORE_LOG_LEVEL <= 5)
+#define LOG_CORE_CRITICAL(...) \
+    CORE_LOG_CALL(::core::Log::GetCoreLogger(), spdlog::level::critical, __VA_ARGS__)
+// #else
+//     #define LOG_CORE_CRITICAL(...) ((void)0)
+// #endif
 
-        // Backtrace support
-        // Loggers can store in a ring buffer all messages (including debug/trace) for later
-        // inspection. When needed, call dump_backtrace() to see what happened:
-        spdlog::enable_backtrace(10);  // create ring buffer with capacity of 10  messages
-        for (int i = 0; i < 100; i++) {
-            spdlog::debug("Backtrace message {}", i);  // not logged..
-        }
-        // e.g. if some error happened:
-        spdlog::dump_backtrace();  // log them now!
-*/
+// -------------------------------
+// Game Logger Macros
+// -------------------------------
+#if (CORE_LOG_LEVEL <= 0)
+#    define LOG_GAME_TRACE(...) \
+        CORE_LOG_CALL(::core::Log::GetGameLogger(), spdlog::level::trace, __VA_ARGS__)
+#else
+#    define LOG_GAME_TRACE(...) ((void)0)
+#endif
+
+#if (CORE_LOG_LEVEL <= 1)
+#    define LOG_GAME_DEBUG(...) \
+        CORE_LOG_CALL(::core::Log::GetGameLogger(), spdlog::level::debug, __VA_ARGS__)
+#else
+#    define LOG_GAME_DEBUG(...) ((void)0)
+#endif
+
+#if (CORE_LOG_LEVEL <= 2)
+#    define LOG_GAME_INFO(...) \
+        CORE_LOG_CALL(::core::Log::GetGameLogger(), spdlog::level::info, __VA_ARGS__)
+#else
+#    define LOG_GAME_INFO(...) ((void)0)
+#endif
+
+#if (CORE_LOG_LEVEL <= 3)
+#    define LOG_GAME_WARN(...) \
+        CORE_LOG_CALL(::core::Log::GetGameLogger(), spdlog::level::warn, __VA_ARGS__)
+#else
+#    define LOG_GAME_WARN(...) ((void)0)
+#endif
+
+#if (CORE_LOG_LEVEL <= 4)
+#    define LOG_GAME_ERR(...) \
+        CORE_LOG_CALL(::core::Log::GetGameLogger(), spdlog::level::err, __VA_ARGS__)
+#else
+#    define LOG_GAME_ERR(...) ((void)0)
+#endif
+
+// #if (CORE_LOG_LEVEL <= 5)
+#define LOG_GAME_CRITICAL(...) \
+    CORE_LOG_CALL(::core::Log::GetGameLogger(), spdlog::level::critical, __VA_ARGS__)
+// #else
+//     #define LOG_GAME_CRITICAL(...) ((void)0)
+// #endif

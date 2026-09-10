@@ -116,5 +116,5 @@ class ScopedProfileTimer {
 
 // Global instrumentation macros
 #define WT_PROFILE_FRAME_BEGIN() Profiler::Get().BeginFrame()
-#define WT_PROFILE_FRAME_END() Profiler::Get().EndFrame()
-#define WT_PROFILE_SCOPE(zone) ScopedProfileTimer timer__##__LINE__(zone)
+#define WT_PROFILE_FRAME_END()   Profiler::Get().EndFrame()
+#define WT_PROFILE_SCOPE(zone)   ScopedProfileTimer timer__##__LINE__(zone)
