@@ -10,6 +10,7 @@ build/
 # personal project management
 docs/
 logs/
+scripts/
 
 # compiler & os junk (highly recommended for c++)
 *.o

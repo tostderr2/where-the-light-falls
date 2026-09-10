@@ -1,20 +1,9 @@
-#include <glad/glad.h>
 
-#include "core/Core.h"
-#include "core/Log.h"
-#include "core/Profiler.h"
+#include "core/Engine.h"
 
 int main(/*int argc, char* argv[]*/) {
 
     core::Log::Init();
-
-    LOG_GAME_CRITICAL("game crit!!");
-    LOG_GAME_ERR("game err!!");
-    LOG_GAME_WARN("game warn!!");
-    LOG_GAME_INFO("game info!!");
-    LOG_GAME_DEBUG("game debug!!");
-    LOG_GAME_TRACE("game trace!!");
-
 
     LOG_CORE_CRITICAL("core crit!!");
     LOG_CORE_ERR("core err!!");
@@ -22,7 +11,12 @@ int main(/*int argc, char* argv[]*/) {
     LOG_CORE_INFO("core info!!");
     LOG_CORE_DEBUG("core debug!!");
     LOG_CORE_TRACE("core trace!!");
-    // spdlog::log(spdlog::level::level_enum::info, "Welcome to the greatest game ever created\n");
+    LOG_GAME_CRITICAL("game crit!!");
+    LOG_GAME_ERR("game err!!");
+    LOG_GAME_WARN("game warn!!");
+    LOG_GAME_INFO("game info!!");
+    LOG_GAME_DEBUG("game debug!!");
+    LOG_GAME_TRACE("game trace!!");
 
     return 0;
 }

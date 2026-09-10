@@ -1,6 +1,7 @@
 #pragma once
 
 #include <common.h>
+#include "core/Core.h"
 
 enum class ProfileZone : uint16_t {
     Frame = 0,
@@ -32,7 +33,7 @@ struct ProfileSample {
     uint8_t depth;
 };
 
-class Profiler {
+class CORE_API Profiler {
   public:
     static Profiler &Get() {
         static Profiler instance;

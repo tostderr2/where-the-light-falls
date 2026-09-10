@@ -1,6 +1,5 @@
 #include "Log.h"
 
-#include <vector>
 
 #include <spdlog/async.h>
 #include <spdlog/sinks/basic_file_sink.h>
@@ -27,7 +26,7 @@ void Log::Init() {
     // %$     : End color range
     console_sink->set_pattern("%^[%T.%e] [T:%t] [%n] [%s:%#]: %v%$");
 
-    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_st>("game.log", true);
+    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_st>("logs/game.log", true);
     file_sink->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [T:%t] [%n] [%l] [%s:%#]: %v");
 
     std::vector<spdlog::sink_ptr> sinks{console_sink, file_sink};
