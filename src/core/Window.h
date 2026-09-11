@@ -21,14 +21,14 @@ namespace window {
 
 bool Create(Window *win, int width, int height, const char *title);
 void Destroy(Window *window);
-void PollEvents(Window *window);
+void PollEvents();
 bool ShouldClose(Window *window);
 void SwapBuffers(Window *window);
 
-int GetHeight(Window *win);
-int GetWidth(Window *win);
-bool GetVSync(Window *win);
-const char *GetTitle(Window *win);
+// int GetHeight(Window *win);
+// int GetWidth(Window *win);
+// bool GetVSync(Window *win);
+// const char *GetTitle(Window *win);
 } // namespace window
 
 // struct WindowProps {

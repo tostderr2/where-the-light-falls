@@ -6,6 +6,7 @@
 namespace core {
 
 class CORE_API Application {
+public:
     Application();
     ~Application();
 

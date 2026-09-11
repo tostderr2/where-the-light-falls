@@ -1,22 +1,13 @@
 
-#include "core/Engine.h"
+#include "core/Application.h"
+#include "core/Log.h"
 
 int main(/*int argc, char* argv[]*/) {
 
     core::Log::Init();
 
-    LOG_CORE_CRITICAL("core crit!!");
-    LOG_CORE_ERR("core err!!");
-    LOG_CORE_WARN("core warn!!");
-    LOG_CORE_INFO("core info!!");
-    LOG_CORE_DEBUG("core debug!!");
-    LOG_CORE_TRACE("core trace!!");
-    LOG_GAME_CRITICAL("game crit!!");
-    LOG_GAME_ERR("game err!!");
-    LOG_GAME_WARN("game warn!!");
-    LOG_GAME_INFO("game info!!");
-    LOG_GAME_DEBUG("game debug!!");
-    LOG_GAME_TRACE("game trace!!");
+    core::Application app = core::Application();
+    app.Run();
 
     return 0;
 }
