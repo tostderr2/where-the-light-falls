@@ -1,8 +1,9 @@
 #pragma once
 
-#include <common.h>
-#include "core/Core.h"
+#include "Core.h"
 
+namespace core {
+namespace profiler {
 enum class ProfileZone : uint16_t {
     Frame = 0,
     EngineLoop,
@@ -119,3 +120,6 @@ class ScopedProfileTimer {
 #define WT_PROFILE_FRAME_BEGIN() Profiler::Get().BeginFrame()
 #define WT_PROFILE_FRAME_END()   Profiler::Get().EndFrame()
 #define WT_PROFILE_SCOPE(zone)   ScopedProfileTimer timer__##__LINE__(zone)
+
+} // namespace profiler
+} // namespace core

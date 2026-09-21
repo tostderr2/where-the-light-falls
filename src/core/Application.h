@@ -1,21 +1,24 @@
 #pragma once
 
-#include "core/Core.h"
-#include "core/Window.h"
+#include "Core.h"
+#include "Window.h"
+#include "events/EventBuffer.h"
 
 namespace core {
 
 class CORE_API Application {
-public:
+  public:
     Application();
     ~Application();
 
     void Run();
+    void Init();
 
   private:
     Window m_window;
 
-	bool m_running;
+    EventBuffer m_eventBuff;
+    bool m_running;
 };
 
 } // namespace core

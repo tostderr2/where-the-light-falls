@@ -1,12 +1,11 @@
+#include "core/Engine.h"
 
-#include "core/Application.h"
-#include "core/Log.h"
-
-int main(/*int argc, char* argv[]*/) {
+int main(int, char **) {
 
     core::Log::Init();
 
-    core::Application app = core::Application();
+    auto app = core::Application();
+	app.Init();
     app.Run();
 
     return 0;
