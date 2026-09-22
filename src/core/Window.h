@@ -3,6 +3,7 @@
 #include <imgui_impl_glfw.h>
 
 #include "events/EventBuffer.h"
+#include "math/common.h"
 
 namespace core {
 
@@ -12,9 +13,9 @@ namespace core {
 // can make a helper function on glfw's layer for these simple
 // data
 struct Window {
-    GLFWwindow *window = nullptr;
+    GLFWwindow *glfwWindow = nullptr;
 
-     bool VSyncEnabled = false;
+    bool VSyncEnabled = false;
     // // data
     // const char *title = "where the light falls";
     // int height = 0;
@@ -24,12 +25,13 @@ struct Window {
 
 namespace window {
 
-bool Create(Window *, int, int, const char *, EventBuffer *,int enableVSync = 0);
+bool Create(Window *, int, int, const char *, EventBuffer *, int enableVSync = 0);
 void Destroy(Window *);
 void PollEvents();
 bool ShouldClose(Window *);
 void SwapBuffers(Window *);
 void SetCallbacks(Window *, EventBuffer *);
+void GetSize(Window *win, int *width, int *height);
 // int GetHeight(Window *win);
 // int GetWidth(Window *win);
 // bool GetVSync(Window *win);

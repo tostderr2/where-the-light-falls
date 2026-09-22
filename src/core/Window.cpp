@@ -3,9 +3,12 @@
 #include <glad/glad.h>
 
 #include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 #include <GLFW/glfw3.h>
 #include <X11/X.h>
+#include <glm/detail/qualifier.hpp>
+#include <glm/ext/vector_float2.hpp>
 
 #include "Log.h"
 #include "events/Event.h"
@@ -37,8 +40,8 @@ bool Create(Window *win, int width, int height, const char *title, EventBuffer *
     printPlatform(platform);
     // glfw init end
 
-    win->window = glfwCreateWindow(width, height, title, NULL, NULL);
-    if (win->window == NULL) {
+    win->glfwWindow = glfwCreateWindow(width, height, title, NULL, NULL);
+    if (win->glfwWindow == NULL) {
         LOG_CORE_CRITICAL("glfw window creation failed.");
         Destroy(win);
         return false;
@@ -50,7 +53,7 @@ bool Create(Window *win, int width, int height, const char *title, EventBuffer *
     // win->VSync = false;
     // win->shouldClose = false;
 
-    glfwMakeContextCurrent(win->window);
+    glfwMakeContextCurrent(win->glfwWindow);
     win->VSyncEnabled = enableVSync;
     glfwSwapInterval(enableVSync);
     LOG_CORE_INFO("VSync is enabled");
@@ -69,13 +72,13 @@ bool Create(Window *win, int width, int height, const char *title, EventBuffer *
 }
 
 void SetCallbacks(Window *window, EventBuffer *eventBuffer) {
-    glfwSetWindowUserPointer(window->window, eventBuffer);
+    glfwSetWindowUserPointer(window->glfwWindow, eventBuffer);
     setGlfwCallbacks(window);
 }
 
 void Destroy(Window *win) {
-    if (win->window) {
-        glfwDestroyWindow(win->window);
+    if (win->glfwWindow) {
+        glfwDestroyWindow(win->glfwWindow);
         LOG_CORE_INFO("destroyed window");
     }
 
@@ -90,10 +93,10 @@ void PollEvents() {
 // TODO: should be an event callback, and event manager deals with setting a bool for this, that the
 // application should check.
 bool ShouldClose(Window *win) {
-    return glfwWindowShouldClose(win->window);
+    return glfwWindowShouldClose(win->glfwWindow);
 }
 void SwapBuffers(Window *win) {
-    glfwSwapBuffers(win->window);
+    glfwSwapBuffers(win->glfwWindow);
 }
 
 // utility
@@ -192,7 +195,7 @@ void frameBufferSizeCallbackFn(GLFWwindow *window, int width, int height) {
 
 void setGlfwCallbacks(Window *win) {
 
-    GLFWwindow *window = win->window;
+    GLFWwindow *window = win->glfwWindow;
 
     glfwSetFramebufferSizeCallback(window, frameBufferSizeCallbackFn);
     glfwSetWindowSizeCallback(window, windowSizeCallbackFn);
@@ -238,21 +241,24 @@ void printPlatform(int platformId) {
 // this feels dumb. app can just do win->height and stuff lol
 int GetHeight(Window *win) {
     int wd, ht;
-    glfwGetWindowSize(win->window, &wd, &ht);
+    glfwGetWindowSize(win->glfwWindow, &wd, &ht);
     return ht;
 }
 int GetWidth(Window *win) {
     int wd, ht;
-    glfwGetWindowSize(win->window, &wd, &ht);
+    glfwGetWindowSize(win->glfwWindow, &wd, &ht);
     return wd;
 }
 bool GetVSync(Window *win) {
     return win->VSyncEnabled;
 }
 const char *GetTitle(Window *win) {
-    return glfwGetWindowTitle(win->window);
+    return glfwGetWindowTitle(win->glfwWindow);
 }
 
+void GetSize(Window *win, int *width, int *height) {
+    glfwGetWindowSize(win->glfwWindow, width, height);
+}
 } // namespace window
 
 } // namespace core

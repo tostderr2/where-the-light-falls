@@ -1,25 +1,30 @@
-# vs code and vim
+# vs code, nvim and thier extensions
 *.swp
 .vscode/
+.nvim/
+.sourcedive/
+.cache/
 
+# libraries and tools data
+imgui.ini
+logs/
 
 bin/
 bin-int/
 build/
+assets/
 
 # personal project management
 docs/
-logs/
 scripts/
 
-# compiler & os junk (highly recommended for c++)
+# compiler & os junk
 *.o
 *.obj
 *.out
 .DS_Store
 Thumbs.db
 
-# to make sure global git configurations arent removes
 !.gitattributes
 !.gitignore
 
