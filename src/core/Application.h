@@ -4,6 +4,7 @@
 
 #include "Core.h"
 #include "Window.h"
+#include "core/render/opengl/GLRenderDevice.h"
 #include "events/EventBuffer.h"
 #include "game/Game.h"
 
@@ -20,10 +21,13 @@ class CORE_API Application {
 
   private:
     Window m_window;
-
     EventBuffer m_eventBuff;
     bool m_running;
-    // game::Game* m_game;
+    game::Game m_game;
+	render::Renderer m_renderer;
+
+private:
+  void ProcessEvents();
 };
 
 } // namespace core

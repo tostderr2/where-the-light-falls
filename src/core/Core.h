@@ -51,3 +51,6 @@
 #    define CORE_DEBUGBREAK()
 #    define CORE_ASSERT(expr, ...) ((void)0)
 #endif
+
+
+void Core_Sleep(int milliseconds);

@@ -1,8 +1,4 @@
-#pragma once
+#include "GLRenderDevice.h"
 
-namespace core {
-
-namespace render {
-struct Renderer {};
-} // namespace render
-} // namespace core
+void core::render::OnEvent(Renderer &, Event &) {
+}

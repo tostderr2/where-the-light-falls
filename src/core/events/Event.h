@@ -19,16 +19,20 @@ enum class EventType : uint8_t {
     MouseScrolled,
 
 	FrameBufferResize,
+
+	INVALID,
 };
 
 struct Event {
-    EventType type;
+    EventType type = EventType::INVALID;
+	// TODO: use this after cehcking 
+	bool handled = false;
  union {
-        struct { int width, height; }        windowResize;
-        struct { int width, height; }        frameBufferResize;
-        struct { int keycode; bool repeat; }  key;
+        struct { int32_t width, height; }        windowResize;
+        struct { int32_t width, height; }        frameBufferResize;
+        struct { int32_t keycode, mods; bool repeat; }  key;
         struct { double x, y; }               mouseMove;
-        struct { int button; }                mouseButton;
+        struct { int32_t button, mods; }                mouseButton;
         struct { double xOffset, yOffset; }   mouseScroll;
     };
 };

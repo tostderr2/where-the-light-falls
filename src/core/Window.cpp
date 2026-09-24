@@ -40,7 +40,11 @@ bool Create(Window *win, int width, int height, const char *title, EventBuffer *
     printPlatform(platform);
     // glfw init end
 
-    win->glfwWindow = glfwCreateWindow(width, height, title, NULL, NULL);
+    // NOTE: copied from imgui examples for opengl3
+    float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(
+        glfwGetPrimaryMonitor()); // Valid on GLFW 3.3+ only
+    win->glfwWindow =
+        glfwCreateWindow((int)(main_scale * width), (int)(main_scale * height), title, NULL, NULL);
     if (win->glfwWindow == NULL) {
         LOG_CORE_CRITICAL("glfw window creation failed.");
         Destroy(win);
@@ -95,6 +99,17 @@ void PollEvents() {
 bool ShouldClose(Window *win) {
     return glfwWindowShouldClose(win->glfwWindow);
 }
+
+// FIXME: delete this. window must do no rendering
+// void Render(Window *win) {
+//
+//     ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+//
+//     glClearColor(clearColor.x * clearColor.w, clearColor.y * clearColor.w,
+//                  clearColor.z * clearColor.w, clearColor.w);
+//     glClear(GL_COLOR_BUFFER_BIT);
+// }
+
 void SwapBuffers(Window *win) {
     glfwSwapBuffers(win->glfwWindow);
 }
@@ -102,8 +117,6 @@ void SwapBuffers(Window *win) {
 // utility
 
 // all the callback funcitons and setup for glfw
-// TODO: use the mods variable in all the callbacks. or let the game part manually pull it
-// individually??
 void glfwErrorCallback(int error, const char *description) {
     LOG_CORE_CRITICAL("GLFW Error ({0}): {1}", error, description);
 }
@@ -125,10 +138,10 @@ void keyCallbackFn(GLFWwindow *window, int key, int scancode, int action, int mo
     Event e;
     if (action == GLFW_RELEASE) {
         e.type = EventType::KeyReleased;
-        e.key = {key, false};
+        e.key = {key, mods, false};
     } else {
         e.type = EventType::KeyPressed;
-        e.key = {key, action == GLFW_REPEAT};
+        e.key = {key, mods, action == GLFW_REPEAT};
     }
 
     auto *eb = (EventBuffer *)glfwGetWindowUserPointer(window);
@@ -142,7 +155,7 @@ void mouseButtonCallbackFn(GLFWwindow *window, int button, int action, int mods)
     } else if (action == GLFW_RELEASE) {
         e.type = EventType::MouseButtonReleased;
     }
-    e.mouseButton = {button};
+    e.mouseButton = {button, mods};
 
     auto *eb = (EventBuffer *)glfwGetWindowUserPointer(window);
     eventbuffer::Push(eb, e);
@@ -179,7 +192,10 @@ void windowSizeCallbackFn(GLFWwindow *window, int width, int height) {
 void frameBufferSizeCallbackFn(GLFWwindow *window, int width, int height) {
     // NOTE: doing this right here because in windows and mac resizing via mouse
     // stalls other events thus freezing the whole window
-    // not sure if this will help
+    // doing this here adjusts the viewport but
+    // to actually smoothly render while resizing will need a micro render
+    // commands at resizing phase. which is actually not even needed i guess
+    // window resizing manually shouldnt be allowed in game, simple
     glViewport(0, 0, width, height);
 
     //  camera, ui, and custom framebuffers will need to know the changes
@@ -187,8 +203,14 @@ void frameBufferSizeCallbackFn(GLFWwindow *window, int width, int height) {
     Event e;
     e.type = EventType::FrameBufferResize;
     e.frameBufferResize = {width, height};
-    LOG_CORE_INFO("Frame buffer resize: ({}, {})", width, height);
 
+    auto *eb = (EventBuffer *)glfwGetWindowUserPointer(window);
+    eventbuffer::Push(eb, e);
+}
+
+void windowCloseCallbackFn(GLFWwindow *window) {
+    Event e;
+    e.type = EventType::WindowClose;
     auto *eb = (EventBuffer *)glfwGetWindowUserPointer(window);
     eventbuffer::Push(eb, e);
 }
@@ -200,6 +222,7 @@ void setGlfwCallbacks(Window *win) {
     glfwSetFramebufferSizeCallback(window, frameBufferSizeCallbackFn);
     glfwSetWindowSizeCallback(window, windowSizeCallbackFn);
     glfwSetWindowFocusCallback(window, windowFocusCallbackFn);
+    glfwSetWindowCloseCallback(window, windowCloseCallbackFn);
 
     glfwSetKeyCallback(window, keyCallbackFn);
 
