@@ -2,9 +2,9 @@
 
 int main(int, char **) {
 
-    core::Log::Init();
+    Core::Log::Init();
 
-    auto app = core::Application();
+    auto app = Core::Application();
 	app.Init();
     app.Run();
 

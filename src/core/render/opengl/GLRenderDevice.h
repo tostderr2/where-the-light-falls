@@ -2,12 +2,11 @@
 
 // #if defined(USE_OPENGL)
 #include "core/events/Event.h"
-namespace core {
+namespace Core {
 
-namespace render {
+namespace Renderer {
 struct Renderer {};
 
-void OnEvent(Renderer &, Event &);
-} // namespace render
-} // namespace core
+} // namespace Renderer
+} // namespace Core
 // #endif

@@ -2,21 +2,15 @@
 
 #include <glad/glad.h>
 
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
-
 #include <GLFW/glfw3.h>
-#include <X11/X.h>
-#include <glm/detail/qualifier.hpp>
-#include <glm/ext/vector_float2.hpp>
 
 #include "Log.h"
 #include "events/Event.h"
 #include "events/EventBuffer.h"
 
-namespace core {
+namespace Core {
 
-namespace window {
+namespace WindowManager {
 
 void printPlatform(int platformId);
 void glfwErrorCallback(int error, const char *description);
@@ -89,26 +83,17 @@ void Destroy(Window *win) {
     glfwTerminate();
     LOG_CORE_INFO("terminated glfw");
 }
+void ClearScreen() {
+    ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    glClearColor(clearColor.x * clearColor.w, clearColor.y * clearColor.w,
+                 clearColor.z * clearColor.w, clearColor.w);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
 
 void PollEvents() {
     glfwPollEvents();
 }
-
-// TODO: should be an event callback, and event manager deals with setting a bool for this, that the
-// application should check.
-bool ShouldClose(Window *win) {
-    return glfwWindowShouldClose(win->glfwWindow);
-}
-
-// FIXME: delete this. window must do no rendering
-// void Render(Window *win) {
-//
-//     ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-//
-//     glClearColor(clearColor.x * clearColor.w, clearColor.y * clearColor.w,
-//                  clearColor.z * clearColor.w, clearColor.w);
-//     glClear(GL_COLOR_BUFFER_BIT);
-// }
 
 void SwapBuffers(Window *win) {
     glfwSwapBuffers(win->glfwWindow);
@@ -134,7 +119,7 @@ void windowFocusCallbackFn(GLFWwindow *window, int focused) {
     eventbuffer::Push(eb, e);
 }
 
-void keyCallbackFn(GLFWwindow *window, int key, int scancode, int action, int mods) {
+void keyCallbackFn(GLFWwindow *window, int key, int , int action, int mods) {
     Event e;
     if (action == GLFW_RELEASE) {
         e.type = EventType::KeyReleased;
@@ -282,6 +267,11 @@ const char *GetTitle(Window *win) {
 void GetSize(Window *win, int *width, int *height) {
     glfwGetWindowSize(win->glfwWindow, width, height);
 }
-} // namespace window
 
-} // namespace core
+GLFWwindow *GetNativeWindow(Window *win) {
+    return win->glfwWindow;
+}
+
+} // namespace WindowManager
+
+} // namespace Core

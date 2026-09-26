@@ -1,8 +1,8 @@
 #include "Game.h"
 
-namespace game {
+namespace InGame {
 
-void OnEvent(Game &game, core::Event &event) {
+void OnEvent(Game &game, Core::Event &event) {
 }
 
 void OnUpdate(float deltaTime, Game &game) {
@@ -20,4 +20,4 @@ void OnUpdate(float deltaTime, Game &game) {
 void OnRender(Game &game) {
 }
 
-} // namespace game
+} // namespace InGame

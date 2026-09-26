@@ -4,7 +4,7 @@
 
 #include "Event.h"
 
-namespace core {
+namespace Core {
 
 struct EventBuffer {
     std::vector<Event> events;

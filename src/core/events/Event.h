@@ -2,7 +2,7 @@
 
 #include "pch.h"
 
-namespace core {
+namespace Core {
 
 enum class EventType : uint8_t {
     WindowResize,

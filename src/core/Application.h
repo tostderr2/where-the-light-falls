@@ -8,7 +8,7 @@
 #include "events/EventBuffer.h"
 #include "game/Game.h"
 
-namespace core {
+namespace Core {
 
 class CORE_API Application {
   public:
@@ -23,11 +23,13 @@ class CORE_API Application {
     Window m_window;
     EventBuffer m_eventBuff;
     bool m_running;
-    game::Game m_game;
-	render::Renderer m_renderer;
+	InGame::Game m_game;
+    Renderer::Renderer m_renderer;
 
-private:
-  void ProcessEvents();
+  private:
+    void processEvents();
+    void updateStates(float);
+    void render();
 };
 
 } // namespace core

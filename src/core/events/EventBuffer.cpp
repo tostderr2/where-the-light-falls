@@ -2,7 +2,7 @@
 
 #include "core/Log.h"
 
-namespace core {
+namespace Core {
 
 void eventbuffer::Push(EventBuffer *buff, const Event &e) {
     // TODO: remove this after testing: how many events can happen at once

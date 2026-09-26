@@ -2,8 +2,8 @@
 
 #include "Core.h"
 
-namespace core {
-namespace profiler {
+namespace Core {
+namespace Profiler {
 enum class ProfileZone : uint16_t {
     Frame = 0,
     EngineLoop,

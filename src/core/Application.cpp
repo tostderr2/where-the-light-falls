@@ -1,16 +1,17 @@
 #include "Application.h"
 
+#include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <glm/detail/qualifier.hpp>
 #include <glm/ext/vector_int2.hpp>
 
 #include "Log.h"
 #include "Window.h"
+#include "core/time/CoreTime.h"
 #include "core_imgui/CoreImGui.h"
 #include "game/Game.h"
-#include "render/opengl/GLRenderDevice.h"
 
-namespace core {
+namespace Core {
 
 Application::Application() {
     // TODO: change this to higher number one's tested by hiting all buttons and mouse
@@ -19,29 +20,49 @@ Application::Application() {
 }
 
 Application::~Application() {
-    // window::Destroy(&m_window);
+    Gui::Shutdown();
+    WindowManager::Destroy(&m_window);
 }
 
 void Application::Init() {
 
-    window::Create(&m_window, 1080, 720, "Where the light falls", &m_eventBuff);
-    window::SetCallbacks(&m_window, &m_eventBuff);
+    WindowManager::Create(&m_window, 1080, 720, "Where the light falls", &m_eventBuff);
+    WindowManager::SetCallbacks(&m_window, &m_eventBuff);
     LOG_CORE_INFO("Created window");
 
-    imgui::ImguiInit(m_window.glfwWindow);
+    Gui::Init(m_window.glfwWindow);
 }
+
+void Application::Run() {
+    // TODO: remove the filler dt and write a simple impl
+    float lastCheckedTime = Time::CurrentTime();
+
+    while (m_running) {
+        float currentTime = glfwGetTime();
+        float deltaTime = currentTime - lastCheckedTime;
+        lastCheckedTime = currentTime;
+
+        WindowManager::ClearScreen();
+        WindowManager::PollEvents();
+
+        processEvents();
+        updateStates(deltaTime);
+        render();
+
+        WindowManager::SwapBuffers(&m_window);
+    }
+}
+
 Window *Application::GetWindow() {
     return &m_window;
 }
 
-void Application::ProcessEvents() {
+void Application::processEvents() {
     for (auto &event : m_eventBuff.events) {
-
-        LOG_CORE_DEBUG("Ping window close. handled is {}", event.handled);
         // gui
         // TODO: implement on event for imgui
         // instead of letting imgui handle its own events
-        // imgui::OnEvent(event);
+        // Gui::OnEvent(event);
         if (event.handled)
             continue;
 
@@ -57,38 +78,24 @@ void Application::ProcessEvents() {
         if (event.handled)
             continue;
 
-        render::OnEvent(m_renderer, event);
-        game::OnEvent(m_game, event);
+		// immidiate, once fire events like jumping and hitting
+        InGame::OnEvent(m_game, event);
     }
 
     eventbuffer::Clear(&m_eventBuff);
 }
+void Application::updateStates(float deltaTime) {
+    Gui::OnUpdate(deltaTime);
 
-void Application::Run() {
-    // TODO: remove the filler dt and write a simple impl
-    float lastCheckedTime = glfwGetTime();
-
-    while (m_running) {
-        float currentTime = glfwGetTime();
-        float deltaTime = currentTime - lastCheckedTime;
-        lastCheckedTime = currentTime;
-
-        window::PollEvents();
-        ProcessEvents();
-
-        imgui::ImguiStartFrame();
-        imgui::ImguiDraw();
-        // // update state
-        // game::OnUpdate(deltaTime, m_game);
-        // // render
-        // game::OnRender(m_game);
-
-        imgui::ImguiEndFrame();
-
-        window::SwapBuffers(&m_window);
-    }
-
-    imgui::ImguiShutdown();
-    window::Destroy(&m_window);
+    // persistance updates, updating the state of the objects
+	// like moving ahead, until the key is released
+    InGame::OnUpdate(deltaTime, m_game);
 }
-} // namespace core
+
+void Application::render() {
+    Gui::OnRender();
+
+    InGame::OnRender(m_game);
+}
+
+} // namespace Core

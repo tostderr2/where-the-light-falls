@@ -2,14 +2,13 @@
 
 #include <imgui_impl_glfw.h>
 
-namespace core {
-namespace imgui {
+namespace Core {
+namespace Gui {
 
-void ImguiInit(GLFWwindow *window);
-void ImguiStartFrame();
-void ImguiDraw();
-void ImguiEndFrame(/*GLFWwindow *window */);
-void ImguiShutdown();
+void Init(GLFWwindow *);
+void OnUpdate(float deltaTime);
+void OnRender();
+void Shutdown();
 
-} // namespace imgui
-} // namespace core
+} // namespace Gui
+} // namespace Core

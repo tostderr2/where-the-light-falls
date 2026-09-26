@@ -7,12 +7,17 @@
 
 #include <GLFW/glfw3.h>
 
+#include "CoreImGui.h"
 #include "core/Log.h"
 
-namespace core {
-namespace imgui {
+namespace Core {
+namespace Gui {
 
-void ImguiInit(GLFWwindow *window) {
+void startFrame();
+void draw();
+void endFrame();
+
+void Init(GLFWwindow *window) {
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -47,13 +52,21 @@ void ImguiInit(GLFWwindow *window) {
     LOG_CORE_INFO("imgui initialised and started new frame");
 }
 
-void ImguiStartFrame() {
+void OnUpdate(float) {
+    startFrame();
+}
+void OnRender() {
+    draw();
+    endFrame();
+}
+
+void startFrame() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 }
 
-void ImguiDraw() {
+void draw() {
 
     static bool show_demo_window = true;
     static bool show_another_window = false;
@@ -98,7 +111,7 @@ void ImguiDraw() {
     ImGui::End();
 }
 
-void ImguiEndFrame(/*GLFWwindow *window */) {
+void endFrame(/*GLFWwindow *window */) {
 
     // ImGuiIO &io = ImGui::GetIO();
 
@@ -121,10 +134,10 @@ void ImguiEndFrame(/*GLFWwindow *window */) {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void ImguiShutdown() {
+void Shutdown() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 }
-} // namespace imgui
-} // namespace core
+} // namespace Gui
+} // namespace Core

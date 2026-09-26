@@ -1,6 +1,5 @@
 #pragma once
 
-
 // DLL export macro - unnecessary for my monolithic game binary
 // originally had defined some stuff here as I had remember how we did it
 // in hazel series. Ik we shouldnt write a story in comments
@@ -52,5 +51,6 @@
 #    define CORE_ASSERT(expr, ...) ((void)0)
 #endif
 
-
-void Core_Sleep(int milliseconds);
+namespace Core {
+void Sleep(int milliseconds);
+}

@@ -1,11 +1,10 @@
 #include "Log.h"
 
-
 #include <spdlog/async.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-namespace core {
+namespace Core {
 
 std::shared_ptr<spdlog::logger> Log::s_coreLogger;
 std::shared_ptr<spdlog::logger> Log::s_gameLogger;
@@ -51,4 +50,4 @@ void Log::Shutdown() {
     spdlog::shutdown();
 }
 
-} // namespace core
+} // namespace Core

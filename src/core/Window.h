@@ -5,7 +5,7 @@
 #include "events/EventBuffer.h"
 #include "math/common.h"
 
-namespace core {
+namespace Core {
 
 // TODO:
 // as i will only be using opengl in this game
@@ -23,15 +23,16 @@ struct Window {
     // bool shouldClose = false;
 };
 
-namespace window {
+namespace WindowManager {
 
-bool Create(Window *, int, int, const char *, EventBuffer *, int enableVSync = 0);
+bool Create(Window *, int width, int height, const char *title, EventBuffer *, int enableVSync = 0);
 void Destroy(Window *);
+void ClearScreen();
 void PollEvents();
-bool ShouldClose(Window *);
 void SwapBuffers(Window *);
 void SetCallbacks(Window *, EventBuffer *);
-void GetSize(Window *win, int *width, int *height);
+void GetSize(Window *, int *width, int *height);
+GLFWwindow *GetNativeWindow(Window *);
 // int GetHeight(Window *win);
 // int GetWidth(Window *win);
 // bool GetVSync(Window *win);
