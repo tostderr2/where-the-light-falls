@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 
+#include <imgui_impl_glfw.h>
+
 #include <GLFW/glfw3.h>
 
 #include "Log.h"
@@ -76,8 +78,8 @@ void SetCallbacks(Window *window, EventBuffer *eventBuffer) {
 
 void Destroy(Window *win) {
     if (win->glfwWindow) {
-        glfwDestroyWindow(win->glfwWindow);
         LOG_CORE_INFO("destroyed window");
+        glfwDestroyWindow(win->glfwWindow);
     }
 
     glfwTerminate();
@@ -119,7 +121,7 @@ void windowFocusCallbackFn(GLFWwindow *window, int focused) {
     eventbuffer::Push(eb, e);
 }
 
-void keyCallbackFn(GLFWwindow *window, int key, int , int action, int mods) {
+void keyCallbackFn(GLFWwindow *window, int key, int, int action, int mods) {
     Event e;
     if (action == GLFW_RELEASE) {
         e.type = EventType::KeyReleased;
@@ -155,6 +157,7 @@ void mouseCursorPosCallbackFn(GLFWwindow *window, double xpos, double ypos) {
     eventbuffer::Push(eb, e);
 }
 
+// TODO: does this accurately acculated the events? or should we use a global input member and fill the mouse scroll delta
 void mouseScrollCallbackFn(GLFWwindow *window, double xoffset, double yoffset) {
     Event e;
     e.type = EventType::MouseScrolled;
@@ -171,7 +174,6 @@ void windowSizeCallbackFn(GLFWwindow *window, int width, int height) {
 
     auto *eb = (EventBuffer *)glfwGetWindowUserPointer(window);
     eventbuffer::Push(eb, e);
-    LOG_CORE_INFO("window resize: ({}, {})", width, height);
 }
 
 void frameBufferSizeCallbackFn(GLFWwindow *window, int width, int height) {
@@ -181,7 +183,7 @@ void frameBufferSizeCallbackFn(GLFWwindow *window, int width, int height) {
     // to actually smoothly render while resizing will need a micro render
     // commands at resizing phase. which is actually not even needed i guess
     // window resizing manually shouldnt be allowed in game, simple
-    glViewport(0, 0, width, height);
+    // glViewport(0, 0, width, height);
 
     //  camera, ui, and custom framebuffers will need to know the changes
     //  to update on the next game tick
@@ -246,7 +248,7 @@ void printPlatform(int platformId) {
     }
     LOG_CORE_INFO("glfw initiated for platform: {}", platform);
 }
-// this feels dumb. app can just do win->height and stuff lol
+
 int GetHeight(Window *win) {
     int wd, ht;
     glfwGetWindowSize(win->glfwWindow, &wd, &ht);
@@ -270,6 +272,13 @@ void GetSize(Window *win, int *width, int *height) {
 
 GLFWwindow *GetNativeWindow(Window *win) {
     return win->glfwWindow;
+}
+
+void UpdateForFrameBufferChange(Window *win) {
+    GLFWwindow *window = win->glfwWindow;
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    glViewport(0, 0, width, height);
 }
 
 } // namespace WindowManager

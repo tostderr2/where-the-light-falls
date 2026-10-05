@@ -14,7 +14,7 @@ enum class ProfileZone : uint16_t {
     RenderClear,
     RenderSubmit,
 
-    // Add new engine layers here as you build them
+    // to add new engine layers here as it is being built
     Count
 };
 
@@ -44,6 +44,8 @@ class CORE_API Profiler {
     void BeginFrame() {
         m_Samples.clear();
         m_CurrentDepth = 0;
+        m_TimerStackIndex = 0; // a frame always starts with an empty timer stack
+        m_DroppedPushes = 0;
         m_FrameStart = std::chrono::high_resolution_clock::now();
     }
 
@@ -54,8 +56,10 @@ class CORE_API Profiler {
     }
 
     void PushTimer(ProfileZone zone) {
-        if (m_TimerStackIndex >= MAX_TIMERS)
-            return; // Prevent stack overflow
+        if (m_TimerStackIndex >= MAX_TIMERS) {
+            ++m_DroppedPushes; // remember, so the matching PopTimer is ignored too
+            return;
+        }
 
         auto &timer = m_TimerStack[m_TimerStackIndex++];
         timer.zone = zone;
@@ -64,6 +68,10 @@ class CORE_API Profiler {
     }
 
     void PopTimer() {
+        if (m_DroppedPushes > 0) {
+            --m_DroppedPushes; // this pop belongs to a push that was dropped
+            return;
+        }
         if (m_TimerStackIndex == 0)
             return;
 
@@ -98,6 +106,7 @@ class CORE_API Profiler {
     static constexpr size_t MAX_TIMERS = 64;
     TimerData m_TimerStack[MAX_TIMERS]; // Fixed-size stack array (Zero allocations!)
     size_t m_TimerStackIndex = 0;
+    size_t m_DroppedPushes = 0;
 
     std::vector<ProfileSample> m_Samples;
     uint8_t m_CurrentDepth = 0;
@@ -117,9 +126,13 @@ class ScopedProfileTimer {
 };
 
 // Global instrumentation macros
-#define WT_PROFILE_FRAME_BEGIN() Profiler::Get().BeginFrame()
-#define WT_PROFILE_FRAME_END()   Profiler::Get().EndFrame()
-#define WT_PROFILE_SCOPE(zone)   ScopedProfileTimer timer__##__LINE__(zone)
+#define WT_PROFILE_CONCAT_INNER(a, b) a##b
+#define WT_PROFILE_CONCAT(a, b) \
+    WT_PROFILE_CONCAT_INNER(a, b) // extra level so __LINE__ expands first
+#define WT_PROFILE_FRAME_BEGIN() ::Core::Profiler::Profiler::Get().BeginFrame()
+#define WT_PROFILE_FRAME_END()   ::Core::Profiler::Profiler::Get().EndFrame()
+#define WT_PROFILE_SCOPE(zone) \
+    ::Core::Profiler::ScopedProfileTimer WT_PROFILE_CONCAT(wt_profile_timer_, __LINE__)(zone)
 
-} // namespace profiler
-} // namespace core
+} // namespace Profiler
+} // namespace Core

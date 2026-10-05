@@ -66,8 +66,15 @@ set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "")
 set(GLFW_INSTALL OFF CACHE INTERNAL "")
 
 # automatically add subdirectories from your external folder
-add_subdirectory(external/glfw SYSTEM) 
+add_subdirectory(external/glfw SYSTEM)
 add_subdirectory(external/spdlog SYSTEM)
+
+# unit tests: cmake -B build-test -DBUILD_TESTS=ON
+option(BUILD_TESTS "Build the unit tests in tests/" OFF)
+if(BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
 
 # main linkages
 target_link_libraries(where_the_light_falls PRIVATE glfw spdlog)

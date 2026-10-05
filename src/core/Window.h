@@ -7,11 +7,6 @@
 
 namespace Core {
 
-// TODO:
-// as i will only be using opengl in this game
-// this struct is not necessary
-// can make a helper function on glfw's layer for these simple
-// data
 struct Window {
     GLFWwindow *glfwWindow = nullptr;
 
@@ -33,10 +28,13 @@ void SwapBuffers(Window *);
 void SetCallbacks(Window *, EventBuffer *);
 void GetSize(Window *, int *width, int *height);
 GLFWwindow *GetNativeWindow(Window *);
-// int GetHeight(Window *win);
-// int GetWidth(Window *win);
-// bool GetVSync(Window *win);
-// const char *GetTitle(Window *win);
-} // namespace window
+void UpdateForFrameBufferChange(Window *win);
 
-} // namespace core
+// helpers
+int GetHeight(Window *win);
+int GetWidth(Window *win);
+bool GetVSync(Window *win);
+const char *GetTitle(Window *win);
+} // namespace WindowManager
+
+} // namespace Core

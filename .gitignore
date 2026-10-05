@@ -12,11 +12,14 @@ logs/
 bin/
 bin-int/
 build/
-assets/
+build-*/
+
 
 # personal project management
 docs/
 scripts/
+assets/
+tests/
 
 # compiler & os junk
 *.o

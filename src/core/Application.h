@@ -4,6 +4,7 @@
 
 #include "Core.h"
 #include "Window.h"
+#include "core/Input.h"
 #include "core/render/opengl/GLRenderDevice.h"
 #include "events/EventBuffer.h"
 #include "game/Game.h"
@@ -25,6 +26,7 @@ class CORE_API Application {
     bool m_running;
 	InGame::Game m_game;
     Renderer::Renderer m_renderer;
+	InputManager::State m_inputState;
 
   private:
     void processEvents();

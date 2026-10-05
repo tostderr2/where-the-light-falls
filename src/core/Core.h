@@ -7,23 +7,27 @@
 #define CORE_API
 
 #if defined(DEBUG_MODE)
+#    define CORE_BUILD_NAME "DEBUG"
 #    define CORE_ENABLE_ASSERTS
 #    define CORE_ENABLE_LOGGING
 // level 0: TRACE, DEBUG, INFO, WARN, ERR, CRITICAL
 #    define CORE_LOG_LEVEL 0
 
 #elif defined(RELEASE_MODE)
+#    define CORE_BUILD_NAME "RELEASE"
 #    define CORE_ENABLE_ASSERTS
 #    define CORE_ENABLE_LOGGING
 // level 2: INFO, WARN, ERR, CRITICAL. strip TRACE and DEBUG
 #    define CORE_LOG_LEVEL 2
 
 #elif defined(DIST_MODE)
+#    define CORE_BUILD_NAME "DISTRIBUTION"
 // strip everything for maximum performance and zero overhead
-// keeping critical of cour
-#    define CORE_LOG_LEVEL 6
+// keeping critical of course
+#    define CORE_LOG_LEVEL  6
 #else
 // Fallback default
+#    define CORE_BUILD_NAME "UNKNOWN-FALLBACK"
 #    define CORE_ENABLE_ASSERTS
 #    define CORE_ENABLE_LOGGING
 #    define CORE_LOG_LEVEL 0
@@ -39,6 +43,7 @@
 #        define CORE_DEBUGBREAK()
 #    endif
 
+// NOTE: this fails is i forget to pass in the string. as it should
 #    define CORE_ASSERT(expr, ...)                                       \
         do {                                                             \
             if (!(expr)) {                                               \
